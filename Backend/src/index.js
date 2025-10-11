@@ -4,6 +4,9 @@ import dotenv from "dotenv"
 dotenv.config()
 const app=express();
 
+// ** Middlewares
+
+app.use(express.json())
 
 const PORT=process.env.PORT || 8080
 app.get("/",(req,res)=>{
