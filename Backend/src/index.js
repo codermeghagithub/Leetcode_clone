@@ -2,8 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
-import authRoutes from "./routes/auth.routes.js"
 
+import authRoutes from "./routes/auth.routes.js";
+import problemRoutes from "./routes/problem.routes.js"
 dotenv.config();
 const app=express();
 const PORT=process.env.PORT || 8080
@@ -23,6 +24,7 @@ res.json({
 })
 })
 app.use("/api/v1/auth",authRoutes)
+app.use("/api/v1/problems",problemRoutes)
 
 app.listen(PORT,()=>{
   console.log(`your server is running on port http://localhost:${PORT}`);
