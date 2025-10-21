@@ -20,7 +20,6 @@ model User {
   image    String?
   role     UserRole @default(USER)
   password String
-
   problems Problem[]
 
   createAt  DateTime @default(now())
