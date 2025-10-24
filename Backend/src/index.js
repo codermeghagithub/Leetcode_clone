@@ -25,7 +25,7 @@ res.json({
 })
 app.use("/api/v1/auth",authRoutes)
 app.use("/api/v1/problems",problemRoutes)
-
+app.use("/api/v1/execute-Code",executeCodeRoutes)
 app.listen(PORT,()=>{
   console.log(`your server is running on port http://localhost:${PORT}`);
   

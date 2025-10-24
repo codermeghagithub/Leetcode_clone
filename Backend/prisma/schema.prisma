@@ -20,7 +20,10 @@ model User {
   image    String?
   role     UserRole @default(USER)
   password String
+  
   problems Problem[]
+  submissions Submission[]
+  solvedProblems ProblemSolved[]
 
   createAt  DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -52,6 +55,63 @@ model Problem {
 
   userId String   // ** foreign key
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+submissions Submission[]
+solvedBy ProblemSolved[]
+
 }
 
+
+model Submission{
+  id String @id @default(cuid())
+  userId String 
+  problemId String
+  sourceCode Json
+  stdin String?
+  stdout String?
+  stderr String?
+  compileOutput String?
+  status String //accepted,wrong answer [also store within enum]
+  memory String?
+  time String?
+  createdAt DateTime @default(now())
+
+
+  // **user relations
+  user  User @relation(fields: [userId] , references: [id] , onDelete: Cascade)
+problem Problem @relation(fields:[problemId],references: [id],onDelete: Cascade)
+testCases TestCaseResult[]
+
+@@index([status]) //for easy to fetch
+
+}
+
+model TestCaseResult{
+  id String @id @default(cuid())
+  submissionId String
+  testCase Int 
+  passed Boolean
+  stdout String?
+  expected String?
+  stderr String?
+  compileOutput String?
+  status String?
+  memory String
+  time String?
+  createdAt DateTime @default(now())
+  submission Submission @relation(fields: [submissionId], references: [id] ,onDelete:Cascade)
+}
+
+model ProblemSolved{
+ id  String  @id @default(cuid())
+  userId String
+  problemId String
+  createdAt  DateTime @default(now())
+
+    // Relationships
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId , problemId])
+}
 
