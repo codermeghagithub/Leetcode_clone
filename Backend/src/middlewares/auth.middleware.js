@@ -52,14 +52,14 @@ export const checkAdmin=async(req,res,next)=>{
       }
     });
   
-    if(!user || user.role!=="AdMIN"){
+    if(!user || user.role!=="ADMIN"){
       return res
       .status(403)
       .json({error:"Access denied .user is not an admin."});
     }
     next()
   } catch (error) {
-       console.log("Error in checkAdmin middleware:",error.messag);// ** For database error 
+       console.log("Error in checkAdmin middleware:",error.message);// ** For database error 
        res.status(500).status({message:"Internal Server Error"})
     
   }

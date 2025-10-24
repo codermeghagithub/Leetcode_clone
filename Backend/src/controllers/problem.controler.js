@@ -1,24 +1,24 @@
 import {db} from "../lib/db.js";
-import { getJudge0LanguageId, submitBatch } from "../lib/judge0.js";
+import { getJudge0LanguageId,  pollBatchResults,submitBatch } from "../lib/judge0.js";
 
 export const createProblem=async(req,res)=>{
   const {
-    title,
+       title,
     description,
     difficulty,
     tags,
-    example,
+    examples,
     constraints,
     testCases,
     codeSnippets,
-    redferenceSolutions,
+    referenceSolutions,
     hints,
-    editorials
+    editorial,
   }=req.body;
   try{
 
     // 1. loop through each reference solution for different language 
-    for(const [language,solutionCode] of Object.entries(redferenceSolutions)){
+    for(const [language,solutionCode] of Object.entries(referenceSolutions)){
       // language id
       const languageId=getJudge0LanguageId(language);
 
@@ -27,19 +27,52 @@ export const createProblem=async(req,res)=>{
       }
 
       // Prepare judge0 submission for all testcases 
-      const submission=testCases.map(({input,output})=>({
+      const submissions=testCases.map(({input,output})=>({
         source_code:solutionCode,
         language_id:languageId,
         stdin:input,
         expected_output:output
       }))
 
-      const submissionResults=await submitBatch(submission);
-      const tokens=submissionResults.map((res)=>res.token);
-      
-    }
+      const submissionResults=await submitBatch(submissions);
 
+      const tokens=submissionResults.map((res)=>res.token);
+
+      const results=await pollBatchResults(tokens)
+      for(let i=0;i<results.length;i++){
+        const result=results[i];
+        if(result.status.id!==3){
+          return res.status(400).json({
+            error:`Validation failed for  ${language} on input: ${submissions[i].stdin}`,
+            details:result,
+          });
+        }
+      }
+    }
+  const newProblem=await db.problem.create({
+    data:{
+        title,
+    description,
+    difficulty,
+    tags,
+    examples,
+    constraints,
+    testCases,
+    codeSnippets,
+    referenceSolutions,
+    hints,
+    editorial,
+    userId:req.user.id
+    }
+  })
+  res.status(201).json({
+    success:true,
+    message:"problem created successfully",
+    problem:newProblem,
+  })
   }catch(error){
+    console.error("Error creating problem",error);
+    res.status(500).json({error:"Failed to create problem"});
     
   }
 }
