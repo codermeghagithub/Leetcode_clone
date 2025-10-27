@@ -13,7 +13,15 @@ export function getJudge0LanguageId(Language){
   };
   return languageMap[Language.toUpperCase()]
 }
-
+export function getLanguageName(languageId){
+  const LANGUAGE_NAME={
+    74:"TypeScript",
+    63:"JavaScript",
+    71:"Python",
+    62:"Java"
+  }
+  return LANGUAGE_NAME[languageId] ||"Unknown";
+}
 
 
 export async function submitBatch(submissions){

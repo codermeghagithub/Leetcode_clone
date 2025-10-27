@@ -4,7 +4,10 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 
 import authRoutes from "./routes/auth.routes.js";
-import problemRoutes from "./routes/problem.routes.js"
+import problemRoutes from "./routes/problem.routes.js";
+import executeCodeRoutes  from './routes/executeCode.routes.js';
+// import submissionRoutes from "./routes/submission.routes.js"
+
 dotenv.config();
 const app=express();
 const PORT=process.env.PORT || 8080
@@ -26,6 +29,7 @@ res.json({
 app.use("/api/v1/auth",authRoutes)
 app.use("/api/v1/problems",problemRoutes)
 app.use("/api/v1/execute-Code",executeCodeRoutes)
+// app.use("/api/v1/submissions" , submissionRoutes)
 app.listen(PORT,()=>{
   console.log(`your server is running on port http://localhost:${PORT}`);
   

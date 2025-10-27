@@ -67,6 +67,7 @@ model Submission{
   userId String 
   problemId String
   sourceCode Json
+  language String
   stdin String?
   stdout String?
   stderr String?
