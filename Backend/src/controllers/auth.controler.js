@@ -123,3 +123,24 @@ export const checkAuth = async (req, res) => {
     res.status(500).json({error:"Failed to check authentication"})
   }
 };
+
+
+export const getSubmissions=async(req,res)=>{
+  try {
+    const submissions=await db.submission.findMany({
+    where:{
+      userId:req.user.id,
+    }
+  });
+  res.status(200).json({
+    success:true,
+    message:"Submissions fetched successfully",
+    submissions,
+  })
+}catch(err){
+  console.error("Fetch submissions Error",err);
+  res.status(500).json({error:"Failed to fetch submissions"})
+  
+}
+}
+
